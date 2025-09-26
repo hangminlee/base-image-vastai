@@ -181,7 +181,7 @@ function provisioning_download() {
         header_file=$(mktemp)
 
         # 헤더만 받아오기
-        curl -sI -H "Authorization: Bearer $auth_token" "$1" -o "$header_file"
+        curl -sIL -H "Authorization: Bearer $auth_token" "$1" -o "$header_file"
 
         # Content-Disposition에서 파일명 추출
         local filename
