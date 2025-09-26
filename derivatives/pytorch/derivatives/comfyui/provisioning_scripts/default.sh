@@ -25,22 +25,30 @@ WORKFLOWS=(
 )
 
 CHECKPOINT_MODELS=(
-    "https://civitai.com/api/download/models/798204?type=Model&format=SafeTensor&size=full&fp=fp16"
+    #"https://civitai.com/api/download/models/1765723?type=Model&format=SafeTensor&size=full&fp=fp16"
+    #"https://civitai.com/api/download/models/1624603?type=Model&format=SafeTensor&size=full&fp=fp16"
+    #"https://civitai.com/api/download/models/1581052?type=Model&format=SafeTensor&size=full&fp=fp16"
 )
 
 UNET_MODELS=(
 )
 
 LORA_MODELS=(
+    "https://civitai.com/api/download/models/739919?type=Model&format=SafeTensor"
 )
 
 VAE_MODELS=(
+    "https://civitai.com/api/download/models/333245?type=Model&format=SafeTensor"
 )
 
 ESRGAN_MODELS=(
 )
 
 CONTROLNET_MODELS=(
+)
+
+CIVITAI_TOKEN=(
+    "3eaa6a1cb67a91a121fdbaf04769e453"
 )
 
 ### DO NOT EDIT BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING ###
