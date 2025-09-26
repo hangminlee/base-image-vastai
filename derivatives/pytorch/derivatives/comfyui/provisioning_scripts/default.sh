@@ -116,15 +116,16 @@ function provisioning_get_nodes() {
 
 function provisioning_get_files() {
     if [[ -z $2 ]]; then return 1; fi
+    dir="$1"
     mkdir -p "$dir"
     shift
     arr=("$@")
     printf "Downloading %s model(s) to %s...\n" "${#arr[@]}" "$dir"
     for url in "${arr[@]}"; do
         id=$(echo "${url}" | grep -oP 'models/\K[0-9]+')
-        dir="$1"
+        filename="${dir}/${id}.safetensors"
         printf "Downloading: %s\n" "${url}"
-        provisioning_download "${url}" "${dir}/${id}.safetensors"
+        provisioning_download "${url}" "${filename}"
         printf "\n"
     done
 }
