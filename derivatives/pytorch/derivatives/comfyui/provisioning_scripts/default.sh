@@ -182,10 +182,19 @@ function provisioning_download() {
 
         # 헤더만 받아오기
         curl -sIL -H "Authorization: Bearer $auth_token" "$1" -o "$header_file"
+        
+        location_url=$(grep -i '^location:' "$header_file" | tail -n1 | awk '{print $2}' | tr -d '\r')
 
-        # Content-Disposition에서 파일명 추출
+        # URL 디코딩 함수
+        urldecode() { : "${*//+/ }"; printf '%b' "${_//%/\\x}"; }
+
+        # response-content-disposition 파라미터에서 filename 추출
         local filename
-        filename=$(grep -i 'Content-Disposition:' "$header_file" | sed -n 's/.*filename="?\(.*\)"\?.*/\1/p' | tr -d '\r')
+        filename=$(echo "$location_url" \
+                   | grep -o 'response-content-disposition=[^&]*' \
+                   | sed 's/response-content-disposition=//' \
+                   | urldecode \
+                   | sed -n 's/.*filename="\?\([^"]*\)"\?.*/\1/p')
 
         # 파일명 없으면 URL 마지막 부분 사용
         if [ -z "$filename" ]; then
