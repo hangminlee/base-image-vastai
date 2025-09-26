@@ -182,9 +182,11 @@ function provisioning_download() {
 
         # 헤더만 받아오기
         curl -sIL -H "Authorization: Bearer $auth_token" "$1" -o "$header_file"
-        
+
+        printf "${header_file}"
         location_url=$(grep -i '^location:' "$header_file" | tail -n1 | awk '{print $2}' | tr -d '\r')
 
+        printf "${location_url}"
         # URL 디코딩 함수
         urldecode() { : "${*//+/ }"; printf '%b' "${_//%/\\x}"; }
 
@@ -198,6 +200,11 @@ function provisioning_download() {
 
         # 파일명 없으면 URL 마지막 부분 사용
         if [ -z "$filename" ]; then
+            filename=$(basename "${location_url%%\?*}")
+        fi
+        
+        # location_url 없으면 URL 마지막 부분 사용
+        if [ -z "$location_url" ]; then
             filename=$(basename "$1")
         fi
 
