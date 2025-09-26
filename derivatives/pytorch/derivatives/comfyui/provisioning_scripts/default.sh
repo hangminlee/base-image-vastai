@@ -116,15 +116,15 @@ function provisioning_get_nodes() {
 
 function provisioning_get_files() {
     if [[ -z $2 ]]; then return 1; fi
-    
-    dir="$1"
     mkdir -p "$dir"
     shift
     arr=("$@")
     printf "Downloading %s model(s) to %s...\n" "${#arr[@]}" "$dir"
     for url in "${arr[@]}"; do
+        id=$(echo "${url}" | grep -oP 'models/\K[0-9]+')
+        dir="$1"
         printf "Downloading: %s\n" "${url}"
-        provisioning_download "${url}" "${dir}"
+        provisioning_download "${url}" "${dir}/${id}.safetensors"
         printf "\n"
     done
 }
@@ -178,7 +178,7 @@ function provisioning_download() {
         auth_token="$CIVITAI_TOKEN"
     fi
     if [[ -n $auth_token ]];then
-        wget --header="Authorization: Bearer $auth_token" -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
+        curl -L -H "Authorization: Bearer $auth_token" -O "$2" "$1"
     else
         wget -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
     fi
