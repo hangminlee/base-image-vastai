@@ -177,7 +177,26 @@ function provisioning_download() {
         auth_token="$CIVITAI_TOKEN"
     fi
     if [[ -n $auth_token ]];then
-        curl -L -H "Authorization: Bearer $auth_token" -OJ -o "$2/#1" "$1"
+        local header_file
+        header_file=$(mktemp)
+
+        # 헤더만 받아오기
+        curl -sI -H "Authorization: Bearer $auth_token" "$1" -o "$header_file"
+
+        # Content-Disposition에서 파일명 추출
+        local filename
+        filename=$(grep -i 'Content-Disposition:' "$header_file" | sed -n 's/.*filename="?\(.*\)"\?.*/\1/p' | tr -d '\r')
+
+        # 파일명 없으면 URL 마지막 부분 사용
+        if [ -z "$filename" ]; then
+            filename=$(basename "$1")
+        fi
+
+        # 실제 파일 다운로드
+        curl -L -H "Authorization: Bearer $auth_token" -o "$2/$filename" "$1"
+        
+        # 임시 파일 삭제
+        rm "$header_file"
     else
         wget -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
     fi
