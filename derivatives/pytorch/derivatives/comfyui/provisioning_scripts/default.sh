@@ -122,10 +122,8 @@ function provisioning_get_files() {
     arr=("$@")
     printf "Downloading %s model(s) to %s...\n" "${#arr[@]}" "$dir"
     for url in "${arr[@]}"; do
-        id=$(echo "${url}" | grep -oP 'models/\K[0-9]+')
-        filename="${dir}/${id}.safetensors"
         printf "Downloading: %s\n" "${url}"
-        provisioning_download "${url}" "${filename}"
+        provisioning_download "${url}" "${dir}"
         printf "\n"
     done
 }
@@ -179,7 +177,7 @@ function provisioning_download() {
         auth_token="$CIVITAI_TOKEN"
     fi
     if [[ -n $auth_token ]];then
-        curl -L -OJ -H "Authorization: Bearer $auth_token" -o "$2" "$1"
+        curl -L -H "Authorization: Bearer $auth_token" -OJ -o "$2/#1" "$1"
     else
         wget -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
     fi
